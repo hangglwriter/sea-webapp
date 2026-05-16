@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>카톡방 정치 시뮬레이터 - 보내기 전 4명이 어떻게 답할지 미리 보세요</title>
+<meta name="description" content="시댁어머니, 직장상사, 학부모회, 베프가 그 톡을 받으면 어떻게 답장할까? 보내기 전 4명 동시 시뮬." />
+<meta property="og:title" content="카톡방 정치 시뮬레이터" />
+<meta property="og:description" content="보내기 전, 4명이 어떻게 답할지 미리 보세요." />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<link rel="stylesheet" href="./src/style.css" />
+</head>
+<body class="bg-[#FFFCE8] text-gray-900 font-noto">
+
+<!-- 헤더 -->
+<header class="border-b-4 border-yellow-300 bg-white sticky top-0 z-30">
+  <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div>
+      <h1 class="text-lg sm:text-xl font-black tracking-tight">
+        💬 카톡방 정치 시뮬레이터
+      </h1>
+      <p class="text-[11px] sm:text-xs text-gray-500 mt-0.5">
+        보내기 전, 4명이 어떻게 답할지 미리 보세요
+      </p>
+    </div>
+    <button id="settingsBtn" class="text-xs px-2 py-1 rounded border border-gray-300 hover:bg-gray-50">
+      ⚙ API
+    </button>
+  </div>
+</header>
+
+<!-- 카운트 배너 -->
+<div class="bg-yellow-300 text-center py-2 text-xs font-semibold">
+  🔥 오늘 <span id="todayCount">0</span>명이 시뮬했어요 · 누적 <span id="totalCount">0</span>회
+</div>
+
+<main class="max-w-3xl mx-auto px-4 py-5 pb-32">
+
+  <!-- API 키 입력 (접힘) -->
+  <div id="apiKeyPanel" class="hidden bg-white border border-yellow-200 rounded-xl p-4 mb-4 shadow-sm">
+    <label class="block text-sm font-bold mb-2">🔑 Anthropic API 키</label>
+    <p class="text-[11px] text-gray-500 mb-2">
+      <a href="https://console.anthropic.com/settings/keys" target="_blank" class="underline">console.anthropic.com</a> 에서 발급 · 본인 키 사용 (운영자 저장 X) · 브라우저 localStorage만
+    </p>
+    <input id="apiKeyInput" type="password" placeholder="sk-ant-..." class="w-full px-3 py-2 border border-gray-300 rounded text-sm font-mono" />
+    <div class="flex gap-2 mt-2">
+      <button id="saveKeyBtn" class="flex-1 bg-yellow-400 hover:bg-yellow-500 font-bold py-2 rounded text-sm">저장</button>
+      <button id="clearKeyBtn" class="px-3 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50">삭제</button>
+    </div>
+  </div>
+
+  <!-- 입력 박스 -->
+  <section class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+
+    <!-- Step 1: 페르소나 -->
+    <div class="mb-5">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-sm font-bold">1️⃣ 답장 받고 싶은 4명 선택</h2>
+        <span id="selectedCount" class="text-[11px] text-gray-500">4 / 4</span>
+      </div>
+      <div id="personaGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+    </div>
+
+    <!-- Step 2: 메시지 -->
+    <div class="mb-5">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-sm font-bold">2️⃣ 보내려는 카톡 메시지</h2>
+        <span id="charCount" class="text-[11px] text-gray-500">0 / 300</span>
+      </div>
+      <textarea id="messageInput"
+        rows="3"
+        maxlength="300"
+        placeholder='예) "엄마, 이번 추석 못 갈 것 같아. 일이 너무 바빠서..."'
+        class="w-full px-3 py-3 border-2 border-gray-200 focus:border-yellow-400 rounded-xl text-sm resize-none outline-none"></textarea>
+      <div class="mt-2 flex flex-wrap gap-1.5">
+        <button class="example-btn text-[11px] px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded-full" data-text="엄마 이번 추석 못 갈 것 같아 일이 너무 바빠서">엄마, 추석 못 가</button>
+        <button class="example-btn text-[11px] px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded-full" data-text="팀장님 죄송한데 오늘 연차 좀 쓰고 싶습니다">연차 쓸게요</button>
+        <button class="example-btn text-[11px] px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded-full" data-text="저희 아이는 이번 학예회 참석 어려울 것 같아요">학예회 못 가요</button>
+        <button class="example-btn text-[11px] px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded-full" data-text="야 나 오늘 약속 못 갈 듯 ㅠㅠ">약속 깸 ㅠㅠ</button>
+      </div>
+    </div>
+
+    <!-- 시뮬 시작 -->
+    <button id="runBtn" class="w-full bg-yellow-400 hover:bg-yellow-500 active:bg-yellow-600 disabled:bg-gray-200 disabled:text-gray-400 font-black text-base py-4 rounded-xl shadow-sm transition">
+      🚀 시뮬 시작
+    </button>
+    <p class="text-[10px] text-gray-400 text-center mt-2">
+      입력 텍스트는 24시간 후 자동 삭제 · 운영자 저장 X
+    </p>
+  </section>
+
+  <!-- 로딩 -->
+  <div id="loadingBox" class="hidden mt-6 bg-white rounded-2xl p-8 text-center border border-gray-100">
+    <div class="inline-block animate-spin text-4xl mb-3">⏳</div>
+    <p class="text-sm font-semibold">4명이 답장 작성 중...</p>
+    <p id="loadingPersona" class="text-xs text-gray-500 mt-1">시댁어머니가 메시지 읽음</p>
+  </div>
+
+  <!-- 에러 -->
+  <div id="errorBox" class="hidden mt-6 bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-800"></div>
+
+  <!-- 결과 영역 -->
+  <section id="resultSection" class="hidden mt-6">
+
+    <!-- 다운로드 가능 캡처 영역 -->
+    <div id="captureRoot" class="bg-[#B2C7D9] rounded-2xl overflow-hidden shadow-lg">
+      <div id="resultGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-0"></div>
+      <!-- 워터마크 -->
+      <div class="bg-[#B2C7D9] text-center py-2 text-[10px] text-gray-600 font-semibold border-t border-gray-300/50">
+        📱 카톡방 정치 시뮬레이터 · sea-webapp.pages.dev
+      </div>
+    </div>
+
+    <!-- 공유 버튼들 -->
+    <div class="mt-4 grid grid-cols-2 gap-2">
+      <button id="downloadBtn" class="bg-white border-2 border-yellow-400 hover:bg-yellow-50 font-bold py-3 rounded-xl text-sm">
+        📥 이미지 저장
+      </button>
+      <button id="copyBtn" class="bg-white border-2 border-gray-300 hover:bg-gray-50 font-bold py-3 rounded-xl text-sm">
+        📋 텍스트 복사
+      </button>
+      <button id="storyBtn" class="col-span-2 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white font-bold py-3 rounded-xl text-sm">
+        📱 인스타 스토리용 (9:16) 다운로드
+      </button>
+      <button id="retryBtn" class="col-span-2 bg-gray-100 hover:bg-gray-200 font-bold py-2.5 rounded-xl text-xs">
+        🔄 다시 시뮬
+      </button>
+    </div>
+
+    <!-- 공유 카피 -->
+    <div class="mt-4 bg-white rounded-xl p-3 border border-gray-200">
+      <p class="text-[11px] text-gray-500 mb-1">📤 친구한테 공유 카피 (복사해서 단톡에)</p>
+      <p id="sharePhrase" class="text-sm font-semibold text-gray-800">
+        야 너도 카톡 보내기 전에 4명이 어떻게 답할지 시뮬해봐 → sea-webapp.pages.dev
+      </p>
+    </div>
+  </section>
+
+  <!-- 인스타 스토리 캡처용 (숨김) -->
+  <div id="storyCapture" class="fixed -left-[9999px] top-0 w-[540px]" style="pointer-events:none;"></div>
+
+</main>
+
+<!-- 푸터 -->
+<footer class="border-t border-gray-200 bg-white py-6">
+  <div class="max-w-3xl mx-auto px-4 text-center text-[11px] text-gray-500 leading-relaxed">
+    <p class="font-bold mb-1">🇰🇷 한국 1인 운영 · API 키 본인 입력 · 데이터 24h 자동 삭제</p>
+    <p>성인 18+ 전용 · 자해/혐오 키워드 차단 · 재미용 시뮬 (실제 인물 발언 아님)</p>
+    <p class="mt-2 text-gray-400">© 2026 행글라이터 · <a href="https://github.com/hangglwriter/sea-webapp" class="underline">GitHub</a></p>
+  </div>
+</footer>
+
+<script src="./src/personas.js"></script>
+<script src="./src/claude.js"></script>
+<script src="./src/main.js"></script>
+</body>
+</html>

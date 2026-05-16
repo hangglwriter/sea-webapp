@@ -1,0 +1,297 @@
+/* 카톡방 정치 시뮬레이터 - 한국 카톡 UI 정확 재현 */
+
+:root {
+  --kakao-bg: #B2C7D9;
+  --kakao-yellow: #FAE100;
+  --kakao-yellow-soft: #FEE500;
+  --kakao-bubble-other: #FFFFFF;
+  --kakao-text: #191919;
+  --kakao-time: #8e9aa3;
+  --kakao-unread: #FFC403;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+}
+
+.font-noto {
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+}
+
+/* ========== 페르소나 칩 ========== */
+.persona-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 2px solid #e5e7eb;
+  background: #fafafa;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 13px;
+  user-select: none;
+}
+
+.persona-chip:hover {
+  background: #fff;
+  border-color: #d1d5db;
+}
+
+.persona-chip.selected {
+  background: #FFF9C4;
+  border-color: #FAE100;
+  font-weight: 700;
+}
+
+.persona-chip .emoji {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.persona-chip .name {
+  font-size: 13px;
+}
+
+/* ========== 카톡 채팅방 UI ========== */
+.chat-window {
+  background: var(--kakao-bg);
+  position: relative;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 640px) {
+  .chat-window:nth-child(odd) {
+    border-right: 1px solid rgba(0,0,0,0.06);
+  }
+  .chat-window:nth-child(1),
+  .chat-window:nth-child(2) {
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+}
+
+.chat-window:not(:last-child) {
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+/* 채팅방 상단 헤더 (카톡 스타일) */
+.chat-header {
+  background: var(--kakao-bg);
+  padding: 10px 14px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.chat-header .back-icon {
+  color: #2a2a2a;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.chat-header .chat-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #191919;
+  flex: 1;
+}
+
+.chat-header .chat-icons {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  color: #2a2a2a;
+}
+
+/* 메시지 영역 */
+.chat-body {
+  flex: 1;
+  padding: 14px 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 보낸 톡 (오른쪽, 노랑) */
+.msg-sent {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.msg-sent .meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 10px;
+  line-height: 1.3;
+  padding-bottom: 2px;
+}
+
+.msg-sent .unread {
+  color: var(--kakao-unread);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.msg-sent .time {
+  color: var(--kakao-time);
+}
+
+.msg-sent .bubble {
+  background: var(--kakao-yellow-soft);
+  color: var(--kakao-text);
+  padding: 8px 11px;
+  border-radius: 14px 4px 14px 14px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  max-width: 75%;
+  word-break: break-word;
+  white-space: pre-wrap;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+}
+
+/* 받은 톡 (왼쪽, 흰색) */
+.msg-recv {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.msg-recv .avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 14px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+}
+
+.msg-recv .col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-width: calc(100% - 60px);
+}
+
+.msg-recv .sender-name {
+  font-size: 11.5px;
+  color: #2a2a2a;
+  padding-left: 2px;
+  font-weight: 500;
+}
+
+.msg-recv .row {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.msg-recv .bubble {
+  background: var(--kakao-bubble-other);
+  color: var(--kakao-text);
+  padding: 8px 11px;
+  border-radius: 4px 14px 14px 14px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  word-break: break-word;
+  white-space: pre-wrap;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+}
+
+.msg-recv .time {
+  font-size: 10px;
+  color: var(--kakao-time);
+  padding-bottom: 2px;
+  flex-shrink: 0;
+}
+
+/* 타이핑 로딩 */
+.typing {
+  display: inline-flex;
+  gap: 3px;
+  padding: 10px 14px;
+}
+
+.typing span {
+  width: 6px;
+  height: 6px;
+  background: #b0b8c1;
+  border-radius: 50%;
+  animation: typing 1.2s infinite;
+}
+
+.typing span:nth-child(2) { animation-delay: 0.15s; }
+.typing span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* 인스타 스토리 모드 (9:16) */
+.story-mode {
+  width: 540px;
+  height: 960px;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #FFD93D 0%, #FF6B6B 100%);
+  padding: 30px 24px;
+}
+
+.story-mode .story-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 900;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 0 rgba(255,255,255,0.3);
+}
+
+.story-mode .story-sub {
+  text-align: center;
+  font-size: 14px;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.story-mode .story-body {
+  flex: 1;
+  background: var(--kakao-bg);
+  border-radius: 20px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1px;
+  background-color: rgba(0,0,0,0.05);
+}
+
+.story-mode .story-footer {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-top: 16px;
+  background: white;
+  padding: 10px;
+  border-radius: 12px;
+}
+
+/* 워치독 */
+.scrollbar-thin::-webkit-scrollbar { width: 4px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 2px; }
