@@ -1,0 +1,184 @@
+/* Persona Lab - 보조 스타일 */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.screen {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(217, 160, 40, 0.5); }
+  50% { box-shadow: 0 0 0 8px rgba(217, 160, 40, 0); }
+}
+
+.persona-card {
+  animation: slideInRight 0.4s ease-out;
+  animation-fill-mode: both;
+}
+
+.persona-card:nth-child(1) { animation-delay: 0.05s; }
+.persona-card:nth-child(2) { animation-delay: 0.1s; }
+.persona-card:nth-child(3) { animation-delay: 0.15s; }
+.persona-card:nth-child(4) { animation-delay: 0.2s; }
+.persona-card:nth-child(5) { animation-delay: 0.25s; }
+.persona-card:nth-child(6) { animation-delay: 0.3s; }
+.persona-card:nth-child(7) { animation-delay: 0.35s; }
+.persona-card:nth-child(8) { animation-delay: 0.4s; }
+.persona-card:nth-child(9) { animation-delay: 0.45s; }
+.persona-card:nth-child(10) { animation-delay: 0.5s; }
+
+.step-dot {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+.step-dot.active {
+  color: #E8B547;
+  background: rgba(232, 181, 71, 0.15);
+  font-weight: 700;
+}
+
+.step-dot.done {
+  color: #9CA3AF;
+  text-decoration: line-through;
+}
+
+/* 워드클라우드 word 크기 */
+.word-cloud-item {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  background: white;
+  border: 1px solid #E5E7EB;
+  color: #16285A;
+}
+
+.word-cloud-item.size-xs { font-size: 11px; opacity: 0.65; }
+.word-cloud-item.size-sm { font-size: 13px; opacity: 0.8; }
+.word-cloud-item.size-md { font-size: 16px; opacity: 0.9; background: #FBF8F1; }
+.word-cloud-item.size-lg { font-size: 20px; font-weight: 900; background: #FEF3C7; color: #92400E; border-color: #FDE68A; }
+.word-cloud-item.size-xl { font-size: 24px; font-weight: 900; background: #D9A028; color: white; border-color: #B8851E; }
+
+/* 페르소나 카드 응답 */
+.persona-response {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  background: #FBF8F1;
+  border-radius: 12px;
+  border-left: 3px solid #D9A028;
+}
+
+.persona-response.skipped {
+  background: #FEF2F2;
+  border-left-color: #DC2626;
+  opacity: 0.85;
+}
+
+.persona-response.clicked {
+  background: #F0FDF4;
+  border-left-color: #16A34A;
+}
+
+.persona-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0F1E3D, #1E3478);
+  color: #E8B547;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+/* 토론 메시지 */
+.debate-msg {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  animation: slideInRight 0.4s ease-out both;
+}
+
+/* 입력 칸 */
+.idea-input {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.idea-input-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #0F1E3D;
+  color: #E8B547;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+.idea-input input {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #E5E7EB;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.idea-input input:focus {
+  border-color: #D9A028;
+}
+
+/* 토스트 애니메이션 */
+#toast.show {
+  display: block !important;
+  animation: toastIn 0.3s ease-out;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* 모바일 최적화 */
+@media (max-width: 640px) {
+  body { font-size: 14px; }
+}
+
+/* 스크롤바 */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #FBF8F1; }
+::-webkit-scrollbar-thumb { background: #D9A028; border-radius: 4px; }
