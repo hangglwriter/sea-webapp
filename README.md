@@ -124,7 +124,7 @@
 ## 🛠 기술 스택
 
 - **Frontend**: 단일 정적 HTML + Tailwind CSS CDN + Chart.js
-- **AI**: Anthropic Claude API (`claude-sonnet-4-5-20250929`)
+- **AI**: Anthropic Claude API (`claude-sonnet-4-5` alias, 2026-05 시점 검증)
 - **호스팅**: Cloudflare Pages (정적, 무료)
 - **인증**: 사용자 본인 API 키 (Phase 2에서 자체 키 + 결제)
 

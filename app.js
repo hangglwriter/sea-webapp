@@ -8,7 +8,7 @@
  * Anthropic API 호출 패턴 (V3 답습):
  * - 사용자 본인 API 키 → localStorage 저장
  * - browser fetch + anthropic-dangerous-direct-browser-access: true
- * - claude-sonnet-4-6 (실제 호출 가능 모델, 2026-05 시점 최신 Sonnet)
+ * - claude-sonnet-4-5 (안정 alias, 2026-05 시점 검증됨)
  */
 
 // ============================================================
@@ -17,7 +17,7 @@
 
 const STORAGE_KEY = 'persona_lab_api_key';
 const STORAGE_TONE = 'persona_lab_last_tone';
-const MODEL = 'claude-sonnet-4-6';
+const MODEL = 'claude-sonnet-4-5';
 const API_URL = 'https://api.anthropic.com/v1/messages';
 
 const state = {
@@ -52,6 +52,17 @@ const PERSONA_SEEDS = [
 
 function $(id) { return document.getElementById(id); }
 function $$(selector) { return document.querySelectorAll(selector); }
+
+// XSS 차단: AI 응답을 innerHTML에 삽입할 때 사용
+function esc(text) {
+  if (text === null || text === undefined) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 function showToast(msg, duration = 2500) {
   const t = $('toast');
@@ -287,11 +298,11 @@ function renderPersonas() {
   const list = $('personaList');
   list.innerHTML = state.personas.map((p, i) => `
     <div class="persona-card flex gap-3 p-3 bg-cream rounded-xl border border-gray-200">
-      <div class="persona-avatar">${p.name.charAt(0)}</div>
+      <div class="persona-avatar">${esc(p.name.charAt(0))}</div>
       <div class="flex-1 min-w-0">
-        <p class="text-sm font-bold text-navy-900">${p.name} <span class="text-gray-500 font-normal text-xs">· ${p.age}세 ${p.role}</span></p>
-        <p class="text-[11px] text-gray-600 mt-0.5">${p.traits}</p>
-        <p class="text-[11px] text-navy-700 mt-1 font-semibold">→ ${p.channelMatch}</p>
+        <p class="text-sm font-bold text-navy-900">${esc(p.name)} <span class="text-gray-500 font-normal text-xs">· ${esc(p.age)}세 ${esc(p.role)}</span></p>
+        <p class="text-[11px] text-gray-600 mt-0.5">${esc(p.traits)}</p>
+        <p class="text-[11px] text-navy-700 mt-1 font-semibold">→ ${esc(p.channelMatch)}</p>
       </div>
     </div>
   `).join('');
@@ -554,9 +565,9 @@ function renderPersonaResponses(responses, ideas) {
     return `
       <details class="persona-response ${tag}">
         <summary class="cursor-pointer text-sm font-bold flex items-center gap-2 w-full">
-          <div class="persona-avatar">${p.name.charAt(0)}</div>
+          <div class="persona-avatar">${esc(p.name.charAt(0))}</div>
           <div class="flex-1">
-            <div>${p.name} <span class="text-xs text-gray-500 font-normal">· ${p.age}세 ${p.role}</span></div>
+            <div>${esc(p.name)} <span class="text-xs text-gray-500 font-normal">· ${esc(p.age)}세 ${esc(p.role)}</span></div>
             <div class="text-[11px] text-gray-500 font-normal">클릭 ${clickedCount}/${totalCount} · ${clicked ? '👍 시안' + (clicked.idea_index + 1) : '모두 스킵'}</div>
           </div>
         </summary>
@@ -565,7 +576,7 @@ function renderPersonaResponses(responses, ideas) {
             <div class="flex gap-1.5">
               <span class="${r.click ? 'text-green-600' : 'text-red-500'} font-bold">${r.click ? '✓' : '✗'}</span>
               <span class="text-gray-500">시안${r.idea_index + 1}:</span>
-              <span class="flex-1">${r.reason}</span>
+              <span class="flex-1">${esc(r.reason)}</span>
             </div>
           `).join('')}
         </div>
@@ -588,7 +599,7 @@ function renderWordCloud(topWords) {
     else if (ratio > 0.6) size = 'size-lg';
     else if (ratio > 0.4) size = 'size-md';
     else if (ratio > 0.2) size = 'size-sm';
-    return `<span class="word-cloud-item ${size}" title="${count}회">${word}</span>`;
+    return `<span class="word-cloud-item ${size}" title="${esc(count)}회">${esc(word)}</span>`;
   }).join('');
 }
 
@@ -636,11 +647,11 @@ function fillRealData() {
   $('realDataDisplay').classList.remove('hidden');
   $('realDataList').innerHTML = realData.map((d, i) => `
     <div class="flex justify-between items-center bg-white rounded p-2">
-      <span class="font-semibold">시안${i + 1}: ${d.idea.slice(0, 25)}${d.idea.length > 25 ? '...' : ''}</span>
+      <span class="font-semibold">시안${i + 1}: ${esc(d.idea.slice(0, 25))}${d.idea.length > 25 ? '...' : ''}</span>
       <span class="text-right">
-        <span class="text-gray-500">예측 ${d.predicted}%</span>
+        <span class="text-gray-500">예측 ${esc(d.predicted)}%</span>
         <span class="mx-1">→</span>
-        <span class="${d.actual > d.predicted ? 'text-green-600' : 'text-red-600'} font-black">실제 ${d.actual}%</span>
+        <span class="${d.actual > d.predicted ? 'text-green-600' : 'text-red-600'} font-black">실제 ${esc(d.actual)}%</span>
       </span>
     </div>
   `).join('');
@@ -737,7 +748,7 @@ ${state.personas.slice(0, 5).map(p => `${p.name}(${p.age}세): ${p.role}`).join(
 
     $('toEvolutionBtn').classList.remove('hidden');
   } catch (e) {
-    $('debateMessages').innerHTML = `<p class="text-xs text-red-500">자가 토론 생성 실패: ${e.message}</p>`;
+    $('debateMessages').innerHTML = `<p class="text-xs text-red-500">자가 토론 생성 실패: ${esc(e.message)}</p>`;
   }
 }
 
@@ -750,11 +761,11 @@ function renderDebate(messages) {
       div.className = 'debate-msg';
       const persona = state.personas.find(p => p.name === m.name) || { name: m.name };
       div.innerHTML = `
-        <div class="persona-avatar">${persona.name.charAt(0)}</div>
+        <div class="persona-avatar">${esc(persona.name.charAt(0))}</div>
         <div class="flex-1">
-          <p class="text-xs font-bold text-navy-900">${m.name}</p>
-          <p class="text-sm mt-0.5">${m.text}</p>
-          ${m.insight ? `<p class="text-[11px] text-gold-600 mt-1 italic">💡 ${m.insight}</p>` : ''}
+          <p class="text-xs font-bold text-navy-900">${esc(m.name)}</p>
+          <p class="text-sm mt-0.5">${esc(m.text)}</p>
+          ${m.insight ? `<p class="text-[11px] text-gold-600 mt-1 italic">💡 ${esc(m.insight)}</p>` : ''}
         </div>
       `;
       box.appendChild(div);
@@ -774,7 +785,7 @@ function renderWeightShift(shifts) {
       return `
         <div>
           <div class="flex justify-between mb-1">
-            <span>${s.factor}</span>
+            <span>${esc(s.factor)}</span>
             <span class="${diff > 0 ? 'text-gold-400' : (diff < 0 ? 'text-red-300' : 'text-gray-400')} font-bold">${diff > 0 ? '+' : ''}${diff}%</span>
           </div>
           <div class="flex gap-1 items-center">
@@ -786,7 +797,7 @@ function renderWeightShift(shifts) {
               <div class="${color} h-full" style="width: 0%; animation: weightGrow 1.5s ease-out forwards" data-target="${afterPct}"></div>
             </div>
           </div>
-          <p class="text-[10px] text-gray-300 mt-0.5">${s.note}</p>
+          <p class="text-[10px] text-gray-300 mt-0.5">${esc(s.note)}</p>
         </div>
       `;
     }).join('');
@@ -898,21 +909,17 @@ function submitBeta(e) {
     return;
   }
 
-  // mailto 링크로 민티에게 전송 (Phase 1)
-  const subject = encodeURIComponent('[Persona Lab 베타 신청]');
-  const body = encodeURIComponent(
+  // 메일 본문 (mailto / 카톡 공유 / 복사용 공통)
+  const messageBody =
     `안녕하세요, Persona Lab 베타 신청합니다.\n\n` +
     `이메일: ${email}\n` +
     `채널: ${channel || '(미입력)'}\n\n` +
     `자기소개:\n${intro || '(미입력)'}\n\n` +
-    `--\nPersona Lab 베타 모집 페이지에서 신청`
-  );
+    `--\nPersona Lab 베타 모집 페이지에서 신청`;
 
-  // 행글라이터 비즈 이메일 (CLAUDE.md 글로벌 이메일)
-  window.location.href = `mailto:mintmaum07@gmail.com?subject=${subject}&body=${body}`;
-
-  $('betaForm').classList.add('hidden');
-  $('betaSuccess').classList.remove('hidden');
+  // 백업 데이터 영역에 신청 정보 표시 (다크 패턴 차단)
+  $('betaBackupBlock').classList.remove('hidden');
+  $('betaBackupBody').textContent = messageBody;
 
   // localStorage에 신청 저장 (중복 방지 / 분석용)
   try {
@@ -920,6 +927,35 @@ function submitBeta(e) {
     apps.push({ email, channel, intro, at: new Date().toISOString() });
     localStorage.setItem('persona_lab_beta_apps', JSON.stringify(apps));
   } catch (_) {}
+
+  // mailto 시도 (실패해도 백업으로 사용자가 직접 보낼 수 있음)
+  const subject = encodeURIComponent('[Persona Lab 베타 신청]');
+  const body = encodeURIComponent(messageBody);
+  // 행글라이터 비즈 이메일 (CLAUDE.md 글로벌 이메일)
+  try {
+    window.location.href = `mailto:mintmaum07@gmail.com?subject=${subject}&body=${body}`;
+  } catch (_) {}
+
+  $('betaForm').classList.add('hidden');
+  $('betaSuccess').classList.remove('hidden');
+}
+
+// 베타 신청 내용 복사
+function copyBetaText() {
+  const text = $('betaBackupBody').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(
+    () => showToast('내용이 복사됐어요. mintmaum07@gmail.com 에 붙여넣기 해주세요'),
+    () => showToast('복사 실패. 텍스트를 직접 선택해서 복사해주세요')
+  );
+}
+
+// 이메일 주소만 복사
+function copyEmailAddress() {
+  navigator.clipboard.writeText('mintmaum07@gmail.com').then(
+    () => showToast('mintmaum07@gmail.com 복사됨'),
+    () => showToast('복사 실패')
+  );
 }
 
 // ============================================================
@@ -1025,6 +1061,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 베타 제출
   $('betaForm').addEventListener('submit', submitBeta);
+  const cb = $('copyBetaBtn'); if (cb) cb.addEventListener('click', copyBetaText);
+  const ce = $('copyEmailBtn'); if (ce) ce.addEventListener('click', copyEmailAddress);
 
   // 공유
   $('shareBtn').addEventListener('click', copyShareUrl);
