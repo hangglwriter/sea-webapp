@@ -1,29 +1,39 @@
-# sea-webapp - 보리스식 진짜 치열한 자동 사이클
+# sea-webapp - Persona Lab + 행글라이터 OS 진화
 
-**프로젝트 정체**: 단순한 웹앱 만들기 X. "사용자 개입 0 + 스타트업 팀처럼 치열한 토론 + 진짜 차별화된 결과물 도출"이 가능한지 검증하는 **자동화 실험**.
+**프로젝트 정체**: V4 사이클 완료 후 = **Persona Lab MVP가 main에 살아있음**. 다음 세션 = Phase 1.5 A 통합 (채널 분석 + 벤치마킹 + Persona Lab).
 
-**메인 Claude(team-lead) 역할**: 단순 위임자 X. **CEO 겸 적극 토론 참여자**. 안전 수렴 차단, 약한 결정 거부, 충돌 유도, NO-GO 결정 권한 행사.
+**메인 Claude(team-lead) 역할**: V4 사이클까지는 CEO 겸 적극 토론 참여자. Phase 1.5는 직접 통합 작업 (보리스식 자동 사이클 X).
 
 ---
 
-## ⭐ V4 사이클 (다음 세션) 사양 (2026-05-17~)
+## ⭐ 다음 세션 (Phase 1.5 A 통합, 2026-05-18~)
 
-**V3 완료 (2026-05-16) = 카톡방 정치 시뮬레이터 MVP (78/100, 강제 GO, GitHub push 완료, commit df28e66). 보리스식 자동 사이클 진짜 결과물 도출 검증.**
+**V4 완료 (2026-05-17) = Persona Lab MVP 81점 정직 GO (commit 005a7e7, GitHub push 완료). 한국 페르소나 10명 + D3 hook 보정 시연 + 6개월 진화 시뮬.**
 
-V4 = 다음 세션에서 시작. 사용자 명시 가이드:
+**Phase 1.5 = V5 사이클 X**. 사용자 결정 (2026-05-17) = "A 통합 (채널 분석 + 벤치마킹 + Persona Lab)" 직접 작업. 깔대기 함정 해결 ([[v4-funnel-trap]]).
 
-1. **영역**: 민티 업무 교차점 우선 (AI × 글쓰기 × 콘텐츠 마케팅: 행글라이터 / 위너책쓰기 / 전자책 출판 / 강의 / 콘텐츠 마케팅 대행) — V3 "민티 매칭 = 보수 트리거" 무효화. V4는 정면 활용.
-2. **실제 사업 마인드**: 수익 모델 / 시장 크기 / 차별성 / 운영 가능성을 진짜로. 장난감 X.
-3. **비개발자 마찰 무관**: API 키 / OAuth / 기술 설정 같은 마찰 = 메인 Claude가 안내. 점수 차감 X.
-4. **유용 또는 흥미** 둘 중 하나 강하게.
-5. **V3 검증 시간 답습**: 2시간 15분 (R0 10 / R1 25 / R2 25 / R3 20 / R4 25 / R5 5 / R6 5 / R7 25-30)
-6. **1+2+3차 함정 7가지 차단 강령 유지** (CLAUDE.md / 메모리 v3-cycle-traps-7.md)
+### Phase 1.5 통합 OS 컨셉 (5 레이어)
+1. **본인 채널 데이터 분석**: CTR / 시청시간 / 구독자 증감 + 한국어 인사이트 (NEW)
+2. **벤치마킹**: 경쟁 채널 5-10개 트렌드 + 썸네일/제목 패턴 (NEW)
+3. **시안 사전 검증**: Persona Lab 페르소나 100명 (V4 GO 결과물)
+4. **자가 보정 lock-in**: 1+2 데이터 → 페르소나 시드 + 가중치 학습 (V4 D3 hook 진화)
+5. **영상 → 책 + 마케팅** (Phase 3 보류)
 
-**V4 R0 시작 시 (다음 세션)**:
-1. 메모리 4파일 자동 로드 확인: `memory/MEMORY.md` 인덱스 + user-business-mode + v3-cycle-validated + v3-cycle-traps-7 + next-cycle-v4-guide
-2. V3 산출물 `docs/v3-cycle/`로 이동 (round-1~7, index.html, src/, FINAL_REPORT_v3.md) - v1/v2 패턴 답습. main = V4 시작점 깨끗.
-3. PRD.md를 V4 사양으로 업데이트 (영역 = 민티 업무 교차점 / 평가 기준 재설계 검토 / 시간 한도)
-4. R1 시장조사 = 민티 업무 영역 시드 (`memory/next-cycle-v4-guide.md` 시드 6개 참조)
+### Phase 1.5 R0 시작 시 (다음 세션)
+1. **메모리 자동 로드 확인**: `memory/MEMORY.md` + user-business-mode + v3-cycle-traps-7 + v4-cycle-validated + v4-funnel-trap + **next-session-phase1.5** (필수)
+2. **시작점**: D:\Sites\sea-webapp\ main 브랜치 = V4 Persona Lab MVP. 그 위에 채널 분석 + 벤치마킹 추가
+3. **사용자 확인 사항**:
+   - 채널 분석 데이터 소스: YouTube Data API (OAuth) vs Selenium vs 수동 paste
+   - 벤치마킹 경쟁 채널 5-10개 명단
+   - 페르소나 시드 자가 보정 시점 (자동 vs 수동 트리거)
+   - 빌드 시간 한도 (V4 R7 답습 90-120분 또는 더 깊게 3-4시간)
+4. **R8 가혹 검증 답습**: qa-code + reviewer-product = 회귀 카운트 안 늘리고 직접 수정
+5. **V4 산출물 보존**: round-1~8 폴더 = 학습 자료. docs/v4-cycle/ 이동 X (V4 코드가 main에 있음)
+
+### V4 → Phase 1.5 인사이트 핵심
+- Persona Lab D3 hook (예측 vs 실제 자가 보정) = **실제 데이터는 채널 분석에서 옴**. 분리 도구 X, 같은 파이프라인
+- 행글라이터 자체가 작으면 Persona Lab 사용자 풀 X (chicken-egg). 채널 분석 도구 = 행글라이터 키우기 = 1단계, Persona Lab = 2단계
+- R3 attacker가 못 짚은 메타 함정 = V5+ attacker prompt에 "1차 사용자 모집 chicken-egg 검증" 강제 추가
 
 ---
 
